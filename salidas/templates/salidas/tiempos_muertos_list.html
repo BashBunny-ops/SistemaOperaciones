@@ -12,7 +12,8 @@
       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
         <div class="dropdown-header">Acciones:</div>
         <a class="dropdown-item" href="{% url 'salidas:tiempos_muertos_new' %}"><i class="far fa-calendar-plus"></i> Nuevo Registro de TM</a>
-        <a class="dropdown-item" href="{% url 'salidas:tiempos_muertos_print_all' %}" target="reportes"><i class="fas fa-print"></i> Listado de Tiempos Muertos</a> -->
+        <a class="dropdown-item" href="{% url 'salidas:tiempos_muertos_print_all' %}" target="reportes"><i class="fas fa-print"></i> Listado de Tiempos Muertos</a>
+        <a class="dropdown-item" href="{% url 'salidas:tiempos_muertos_completos_excel' %}" ><i class="fas fa-print"></i> Expor Todos los Registros de TM a Eecel</a>
         
       </div>
 </div>
@@ -59,11 +60,21 @@
       {% endfor %}
     </tbody>
   </table>
+
+<h5>Ingrese la fecha inicial para mostrar</h5>
+  <form action="{% url 'salidas:tiempos_muertos_list' %}" method="get">
+  <input type="text" label ="id_fecha_inicial" name ="fecha_inicial" placeholder="(AAAA-MM-DD)">
+  <h5>Ingrese la fecha final para mostrar</h5>
+  <input type="text" label ="id_fecha_final" name ="fecha_final" placeholder="(AAAA-MM-DD)">
+  <button class="btn btn-success btn-circle" type="submit"> <i class="far fa-edit"></i></button> 
+  </form>
+
 </div>
 </div>
 {% endblock %}
 {% block js_page %}
 <script>
+
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
 $('.table').DataTable({
@@ -93,5 +104,6 @@ $('.table').DataTable({
   }
 });
 });
+
 </script>
 {% endblock %}

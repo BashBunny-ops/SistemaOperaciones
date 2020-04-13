@@ -24,9 +24,9 @@ SECRET_KEY = 'axndzq^n-s28yh8^oj#6c-p5nd^*z41m*q@cu-v4hno=r1tw(g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# local comentado, en servidor descomentado
-ALLOWED_HOSTS = ['34.69.197.12','34.69.98.250', 'marbranreports.ml', '127.0.0.1', 'localhost'] 
+# local comentado, en servidor descomentado 
 
+ALLOWED_HOSTS = ['marbranreports.ml', '127.0.0.1', 'localhost'] 
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'textos',
     'catalogos',
     'operaciones',
+    'nomina',
     'inv',
     'plantas',
     'salidas',
@@ -53,6 +54,8 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'dbbackup_ui',
     'djangosecure',
+    'django_filters',
+    'bootstrapform'
 ]
 
 MIDDLEWARE = [
@@ -94,7 +97,7 @@ WSGI_APPLICATION = 'marbran.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':'db_marbrantest',
+        'NAME':'db_marbran',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST':'127.0.0.1',

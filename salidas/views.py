@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse_lazy
 import datetime
+#from datetime import datetime - esta linea causa el error necesitamos revisarla
+from datetime import timedelta
 from django.http import HttpResponse
 
 from django.contrib.messages.views import SuccessMessageMixin
@@ -19,6 +21,9 @@ from salidas.forms import ProduccionEncForm, TiempoMuertoEncForm,\
 from generales.views import SinPrivilegios
 from catalogos.models import Producto
 from tmuertos.models import CausaTM
+
+from dateutil.parser import parse
+
 from plantas.models import Planta, Linea, Supervisor, Operador
 
 class ProduccionView(SinPrivilegios, generic.ListView):
@@ -180,6 +185,34 @@ class TiempoMuertoView(SinPrivilegios, generic.ListView):
     context_object_name = "obj"
     permission_required="salidas.view_tmuertosenc"
 
+    
+    def get_context_data(self, **kwargs):
+        context = super(TiempoMuertoView, self).get_context_data(**kwargs)
+        initial_date = self.request.GET.get('fecha_inicial')
+        final_date = self.request.GET.get('fecha_final')
+        if  not initial_date or not final_date:
+            context ['obj'] = TiempoMuertoEnc.objects.order_by('fecha_produccion')
+        else:
+            initial_date = parse(initial_date)
+            final_date = parse(final_date)    
+            context['obj'] = TiempoMuertoEnc.objects.filter(fecha_produccion__gte=initial_date, fecha_produccion__lte=final_date )
+        return context
+        
+
+
+
+class TiempoMuertoCompletoList(generic.ListView):
+        
+    template_name='salidas/tiempos_muertos_completos.html'
+    context_object_name='obj'
+    queryset = TiempoMuertoEnc.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(TiempoMuertoCompletoList, self).get_context_data(**kwargs)
+        context['detalles'] = TiempoMuertonDet.objects.all()
+        context['encabezado'] = self.queryset
+        return context
+
 
 @login_required(login_url='/login/')
 @permission_required('salidas.view_tmuertosenc', login_url='generales:sin_privilegios')
@@ -231,7 +264,6 @@ def tiempos_muertos(request,tiempo_muerto_id=None):
         plant=Planta.objects.get(pk=planta)
         line=Linea.objects.get(pk=linea)
         spvs=Supervisor.objects.get(pk=supervisor)
-        
         
 
         if not tiempo_muerto_id:
